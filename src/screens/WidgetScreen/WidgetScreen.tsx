@@ -1,11 +1,11 @@
 import React from 'react';
-import {Text} from 'react-native';
 import TabScreenSafeAreaWrapper from '../../components/TabScreenSafeAreaWrapper';
+import WebView from 'react-native-webview';
 
 const WidgetScreen = () => {
   return (
     <TabScreenSafeAreaWrapper>
-      <Text>WidgetScreen</Text>
+      <WebView source={{uri: 'https://rewards.scrimmage.co'}} />
     </TabScreenSafeAreaWrapper>
   );
 };

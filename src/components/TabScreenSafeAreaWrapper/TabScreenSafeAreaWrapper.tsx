@@ -10,7 +10,7 @@ const TabScreenSafeAreaWrapper = ({children}: {children: React.ReactNode}) => {
         styles.container,
         {
           // paddingTop: insets.top,
-          paddingBottom: insets.bottom,
+          // paddingBottom: insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },

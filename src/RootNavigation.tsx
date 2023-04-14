@@ -3,7 +3,7 @@ import {
   createNavigationContainerRef,
   NavigationContainer,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainScreen from './screens/MainScreen';
 import WidgetScreen from './screens/WidgetScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
