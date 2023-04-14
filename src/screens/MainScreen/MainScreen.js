@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, Image} from 'react-native';
-import CommonStyles from '../Styles/CommonStyles';
-import FlipButton from '../components/FlipButton';
-import RoundButton from '../components/RoundButton';
+import CommonStyles from '../../Styles/CommonStyles';
+import FlipButton from '../../components/FlipButton';
+import RoundButton from '../../components/RoundButton';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const coin_H = require('../assets/Coin_H.png');
-const coin_T = require('../assets/Coin_T.png');
-const lottieData = require('../assets/Lottie/coin_flip.json');
+const coin_H = require('../../assets/Coin_H.png');
+const coin_T = require('../../assets/Coin_T.png');
+const lottieData = require('../../assets/Lottie/coin_flip.json');
 
 export default class MainScreen extends Component {
   constructor(props) {
@@ -369,13 +369,13 @@ export default class MainScreen extends Component {
         <Text style={{marginBottom: 10, fontSize: 14}}>Choose & flip</Text>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <FlipButton
-            imageSource={require('../assets/FlipButton_left.png')}
+            imageSource={require('../../assets/FlipButton_left.png')}
             effect={() => this.Flipping('Heads')}
             disabled={this.state.isTurning}
             activeOpacity={this.state.isTurning ? 1 : 0.5}
           />
           <FlipButton
-            imageSource={require('../assets/FlipButton_right.png')}
+            imageSource={require('../../assets/FlipButton_right.png')}
             effect={() => this.Flipping('Tails')}
             disabled={this.state.isTurning}
             activeOpacity={this.state.isTurning ? 1 : 0.5}

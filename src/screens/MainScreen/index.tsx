@@ -1,17 +1,10 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
-
+import {StatusBar, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import MainScreen from './src/screens/MainScreen';
+import MainScreen from './MainScreen';
+import TabScreenSafeAreaWrapper from '../../components/TabScreenSafeAreaWrapper';
 
-function App(): JSX.Element {
+export default () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -20,14 +13,12 @@ function App(): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <TabScreenSafeAreaWrapper>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <MainScreen />
-    </SafeAreaView>
+    </TabScreenSafeAreaWrapper>
   );
-}
-
-export default App;
+};
