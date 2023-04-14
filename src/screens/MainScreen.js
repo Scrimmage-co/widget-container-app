@@ -4,6 +4,7 @@ import CommonStyles from '../Styles/CommonStyles';
 import FlipButton from '../components/FlipButton';
 import RoundButton from '../components/RoundButton';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const coin_H = require('../assets/Coin_H.png');
 const coin_T = require('../assets/Coin_T.png');
@@ -47,13 +48,13 @@ export default class MainScreen extends Component {
 
   clearData = async () => {
     try {
-      // await AsyncStorage.removeItem('@TotalResultCount')
-      // await AsyncStorage.removeItem('@WinCount');
-      // await AsyncStorage.removeItem('@TailsResultCount');
-      // await AsyncStorage.removeItem('@HeadsResultCount');
-      // await AsyncStorage.removeItem('@HeadsWinCount');
-      // await AsyncStorage.removeItem('@TailsWinCount');
-      // await AsyncStorage.removeItem('@StreakCount');
+      await AsyncStorage.removeItem('@TotalResultCount');
+      await AsyncStorage.removeItem('@WinCount');
+      await AsyncStorage.removeItem('@TailsResultCount');
+      await AsyncStorage.removeItem('@HeadsResultCount');
+      await AsyncStorage.removeItem('@HeadsWinCount');
+      await AsyncStorage.removeItem('@TailsWinCount');
+      await AsyncStorage.removeItem('@StreakCount');
     } catch (error) {
       console.log(error);
     }
@@ -70,13 +71,13 @@ export default class MainScreen extends Component {
       let tailsWins = this.state.TailsWinCount;
       let streak = this.state.StreakCount;
 
-      // await AsyncStorage.setItem('@TailsResultCount', tails.toString());
-      // await AsyncStorage.setItem('@HeadsResultCount', heads.toString());
-      // await AsyncStorage.setItem('@TotalResultCount', totalResult.toString());
-      // await AsyncStorage.setItem('@WinCount', wins.toString());
-      // await AsyncStorage.setItem('@StreakCount', streak.toString());
-      // await AsyncStorage.setItem('@HeadsWinCount', headsWins.toString());
-      // await AsyncStorage.setItem('@TailsWinCount', tailsWins.toString());
+      await AsyncStorage.setItem('@TailsResultCount', tails.toString());
+      await AsyncStorage.setItem('@HeadsResultCount', heads.toString());
+      await AsyncStorage.setItem('@TotalResultCount', totalResult.toString());
+      await AsyncStorage.setItem('@WinCount', wins.toString());
+      await AsyncStorage.setItem('@StreakCount', streak.toString());
+      await AsyncStorage.setItem('@HeadsWinCount', headsWins.toString());
+      await AsyncStorage.setItem('@TailsWinCount', tailsWins.toString());
     } catch (e) {
       console.log(e);
     }
@@ -84,8 +85,7 @@ export default class MainScreen extends Component {
   // Load saved flip data from local storage
   getData = async () => {
     try {
-      // let tails = await AsyncStorage.getItem('@TailsResultCount')
-      let tails = 0;
+      let tails = await AsyncStorage.getItem('@TailsResultCount');
       if (tails !== null) {
         // value previously stored
         let tailsInteger = parseInt(tails);
@@ -98,8 +98,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let heads = await AsyncStorage.getItem('@HeadsResultCount')
-      let heads = 0;
+      let heads = await AsyncStorage.getItem('@HeadsResultCount');
       if (heads !== null) {
         // value previously stored
         let headsInteger = parseInt(heads);
@@ -112,8 +111,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let total = await AsyncStorage.getItem('@TotalResultCount')
-      let total = 0;
+      let total = await AsyncStorage.getItem('@TotalResultCount');
       if (total !== null) {
         // value previously stored
         let totalResultInteger = parseInt(total);
@@ -126,8 +124,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let wins = await AsyncStorage.getItem('@WinCount')
-      let wins = 0;
+      let wins = await AsyncStorage.getItem('@WinCount');
       if (wins !== null) {
         // value previously stored
         let winsInteger = parseInt(wins);
@@ -140,8 +137,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let headsWins = await AsyncStorage.getItem('@HeadsWinCount')
-      let headsWins = 0;
+      let headsWins = await AsyncStorage.getItem('@HeadsWinCount');
       if (headsWins !== null) {
         // value previously stored
         let headsWinsInteger = parseInt(headsWins);
@@ -154,8 +150,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let tailsWins = await AsyncStorage.getItem('@TailsWinCount')
-      let tailsWins = 0;
+      let tailsWins = await AsyncStorage.getItem('@TailsWinCount');
       if (tailsWins !== null) {
         // value previously stored
         let tailsWinsInteger = parseInt(tailsWins);
@@ -168,8 +163,7 @@ export default class MainScreen extends Component {
         });
       }
 
-      // let streak = await AsyncStorage.getItem('@StreakCount')
-      let streak = 0;
+      let streak = await AsyncStorage.getItem('@StreakCount');
       if (streak !== null) {
         // value previously stored
         let streakInteger = parseInt(streak);
