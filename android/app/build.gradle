@@ -93,13 +93,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.widgetcontainerapp"
+    namespace "co.scrimmage.widget.coinflip"
     defaultConfig {
-        applicationId "com.widgetcontainerapp"
+        applicationId "co.scrimmage.widget.coinflip"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.0.1"
     }
 
     splits {
