@@ -1,6 +1,12 @@
 import React from 'react';
 import TabScreenSafeAreaWrapper from '../../components/TabScreenSafeAreaWrapper';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Button, Input} from '@rneui/themed';
 import {useForm, Controller, useFieldArray} from 'react-hook-form';
 import MinusIcon from '../../components/MinusIcon';
@@ -30,18 +36,30 @@ const UserConfigScreen = () => {
   const appConfig = useSelector<RootState, RootState['appConfig']>(
     state => state.appConfig,
   );
+  const [showAdvanced, setShowAdvanced] = React.useState(false);
   const {control, handleSubmit} = useForm<FormValues, any>({
     defaultValues: {
       username: appConfig.userId || '',
       rewarderKeys:
         appConfig.rewarderKeys.length > 0
-          ? appConfig.rewarderKeys.map((key, index) => ({
-              id: index,
-              value: key,
-            }))
+          ? [
+              ...appConfig.rewarderKeys.map((key, index) => ({
+                id: index,
+                value: key,
+              })),
+              {
+                id: appConfig.rewarderKeys.length,
+                value: '',
+              },
+            ]
           : [
               {
                 id: 0,
+                value:
+                  'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
+              },
+              {
+                id: 1,
                 value: '',
               },
             ],
@@ -97,41 +115,48 @@ const UserConfigScreen = () => {
           name={'username'}
           control={control}
         />
-        {fields.map((field, index) => (
-          <Controller
-            key={field.id}
-            control={control}
-            render={({field: renderField}) => {
-              const canRenderMinusIcon =
-                fields.length > 1 &&
-                (renderField.value !== '' || fields.length - 1 !== index);
-              return (
-                <View>
-                  <Input
-                    label={`Rewarder key #${index + 1}`}
-                    onChangeText={value => {
-                      renderField.onChange(value);
-                      if (index === fields.length - 1) {
-                        append({id: index + 1, value: ''});
-                      }
-                    }}
-                    value={renderField.value}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    rightIcon={
-                      canRenderMinusIcon && (
-                        <TouchableOpacity onPress={() => remove(index)}>
-                          <MinusIcon />
-                        </TouchableOpacity>
-                      )
-                    }
-                  />
-                </View>
-              );
-            }}
-            name={`rewarderKeys.${index}.value`}
-          />
-        ))}
+        <Button onPress={() => setShowAdvanced(!showAdvanced)} type="clear">
+          {showAdvanced ? 'Hide' : 'Show'} advanced (dev only)
+        </Button>
+        {showAdvanced && (
+          <View>
+            {fields.map((field, index) => (
+              <Controller
+                key={field.id}
+                control={control}
+                render={({field: renderField}) => {
+                  const canRenderMinusIcon =
+                    fields.length > 1 &&
+                    (renderField.value !== '' || fields.length - 1 !== index);
+                  return (
+                    <View>
+                      <Input
+                        label={`Rewarder key #${index + 1}`}
+                        onChangeText={value => {
+                          renderField.onChange(value);
+                          if (index === fields.length - 1) {
+                            append({id: index + 1, value: ''});
+                          }
+                        }}
+                        value={renderField.value}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        rightIcon={
+                          canRenderMinusIcon && (
+                            <TouchableOpacity onPress={() => remove(index)}>
+                              <MinusIcon />
+                            </TouchableOpacity>
+                          )
+                        }
+                      />
+                    </View>
+                  );
+                }}
+                name={`rewarderKeys.${index}.value`}
+              />
+            ))}
+          </View>
+        )}
         <Button onPress={handleSubmit(data => submit(data))}>Save</Button>
         {Boolean(appConfig.token) && (
           <View>
@@ -148,7 +173,16 @@ const UserConfigScreen = () => {
               />
             </TouchableOpacity>
             <View style={{height: 20}} />
-            <Button onPress={refresh}>Refresh token</Button>
+            <Text
+              style={{
+                textAlign: 'center',
+                marginVertical: 10,
+              }}>
+              If something goes wrong, touch the next button and try again
+            </Text>
+            <Button onPress={refresh} type="outline">
+              Refresh token
+            </Button>
           </View>
         )}
       </ScrollView>

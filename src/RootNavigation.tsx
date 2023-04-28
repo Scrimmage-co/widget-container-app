@@ -42,7 +42,7 @@ const darkNavigationTheme: ReactNavigationTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: 'red',
+    background: '#111216',
   },
 };
 
