@@ -7,10 +7,14 @@ const TOKEN =
 
 const WidgetScreen = () => {
   return (
-    <TabScreenSafeAreaWrapper>
+    <TabScreenSafeAreaWrapper edges={['left', 'right']}>
       <WebView
         source={{
           uri: `https://coinflip.apps.scrimmage.co/?token=${TOKEN}`,
+        }}
+        style={{
+          backgroundColor: 'transparent',
+          flex: 1,
         }}
       />
     </TabScreenSafeAreaWrapper>

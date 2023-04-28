@@ -1,18 +1,27 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Edge} from 'react-native-safe-area-context/src/SafeArea.types';
 
-const TabScreenSafeAreaWrapper = ({children}: {children: React.ReactNode}) => {
+export interface TabScreenSafeAreaWrapperProps {
+  children: React.ReactNode;
+  edges?: ReadonlyArray<Edge>;
+}
+
+const TabScreenSafeAreaWrapper = ({
+  children,
+  edges = ['top', 'bottom', 'left', 'right'],
+}: TabScreenSafeAreaWrapperProps) => {
   const insets = useSafeAreaInsets();
   return (
     <View
       style={[
         styles.container,
         {
-          // paddingTop: insets.top,
-          // paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
+          paddingTop: edges.includes('top') ? insets.top : 0,
+          paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
+          paddingLeft: edges.includes('left') ? insets.left : 0,
+          paddingRight: edges.includes('right') ? insets.right : 0,
         },
       ]}>
       {children}
