@@ -6,9 +6,15 @@ import {useForm, Controller, useFieldArray} from 'react-hook-form';
 import MinusIcon from '../../components/MinusIcon';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import {setRewarderKeys, setUserId} from '../../store/features/appConfigSlice';
+import {
+  setRewarderKeys,
+  setToken,
+  setUserId,
+} from '../../store/features/appConfigSlice';
 import {useNavigation} from '@react-navigation/native';
 import {RootNavigationProp} from '../../RootNavigation';
+import Api from '../../api';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface FormValues {
   username: string;
@@ -46,6 +52,25 @@ const UserConfigScreen = () => {
     name: 'rewarderKeys',
     keyName: 'id',
   });
+
+  const submit = async (data: FormValues) => {
+    dispatch(setUserId(data.username));
+    const keys = data.rewarderKeys
+      .map(key => key.value)
+      .filter(key => key.length > 0);
+    dispatch(setRewarderKeys(keys));
+    const result = await Api.auth.createUserToken(data.username, keys);
+    dispatch(setToken(result.token));
+    navigation.navigate('Main');
+  };
+
+  const refresh = async () => {
+    const result = await Api.auth.createUserToken(
+      appConfig.userId,
+      appConfig.rewarderKeys,
+    );
+    dispatch(setToken(result.token));
+  };
 
   return (
     <TabScreenSafeAreaWrapper edges={['left', 'right']}>
@@ -107,14 +132,25 @@ const UserConfigScreen = () => {
             name={`rewarderKeys.${index}.value`}
           />
         ))}
-        <Button
-          onPress={handleSubmit(data => {
-            dispatch(setUserId(data.username));
-            dispatch(setRewarderKeys(data.rewarderKeys.map(key => key.value)));
-            navigation.navigate('Main');
-          })}>
-          Save
-        </Button>
+        <Button onPress={handleSubmit(data => submit(data))}>Save</Button>
+        {Boolean(appConfig.token) && (
+          <View>
+            <View style={{height: 20}} />
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setString(appConfig.token);
+              }}>
+              <Input
+                label="User token"
+                value={appConfig.token || ''}
+                style={{fontSize: 12, fontVariant: ['tabular-nums']}}
+                multiline={true}
+              />
+            </TouchableOpacity>
+            <View style={{height: 20}} />
+            <Button onPress={refresh}>Refresh token</Button>
+          </View>
+        )}
       </ScrollView>
     </TabScreenSafeAreaWrapper>
   );
