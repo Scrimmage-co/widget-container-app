@@ -88,6 +88,7 @@ const BET_TYPES: Array<string> = [
   'spread',
   'moneyline',
   'prop',
+  'live',
 ];
 
 const DECIMAL_ODDS: Array<number> = [
@@ -99,7 +100,14 @@ const PARLEY_LEGS: Array<number> = [2, 3, 4, 5];
 
 const WAGER_AMOUNTS: Array<number> = [1, 2, 3, 4, 5, 10, 20, 50, 100, 200, 500];
 
-const OUTCOMES: Array<string> = ['win', 'lose', 'push', 'cashout', 'postponed'];
+const OUTCOMES: Array<BetOutcome> = [
+  'win',
+  'lose',
+  'push',
+  'cashout',
+  'postponed',
+  'live',
+];
 
 interface FormValues {
   integration: string;
