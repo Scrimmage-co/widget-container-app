@@ -1,11 +1,11 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   ViewProps,
 } from 'react-native';
+import {Text} from '@rneui/themed';
 
 export interface InlineSelectItem {
   label: string;

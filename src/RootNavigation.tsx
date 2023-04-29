@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   createNavigationContainerRef,
   NavigationContainer,
@@ -13,12 +13,13 @@ import {
 import MainScreen from './screens/MainScreen';
 import WidgetScreen from './screens/WidgetScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image, StyleSheet, useColorScheme} from 'react-native';
+import {Image, StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import {colors} from './Styles/base';
 import BetConfigScreen from './screens/BetConfigScreen';
 import {useSelector} from 'react-redux';
 import {RootState} from './store';
 import UserConfigScreen from './screens/UserConfigScreen';
+import {useThemeMode} from '@rneui/themed';
 
 export type RootStackParamList = {
   UserConfig: undefined;
@@ -54,19 +55,27 @@ const lightNavigationTheme: ReactNavigationTheme = {
 
 const RootNavigation = () => {
   const isDarkMode = useColorScheme() === 'dark';
+  const {setMode} = useThemeMode();
+
+  useEffect(() => {
+    setMode(isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={isDarkMode ? darkNavigationTheme : lightNavigationTheme}>
-      <RootStack.Navigator
-        screenOptions={{
-          // Remove the header
-          headerShown: false,
-        }}>
-        <RootStack.Screen name="Home" component={TabNavigation} />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <NavigationContainer
+        ref={navigationRef}
+        theme={isDarkMode ? darkNavigationTheme : lightNavigationTheme}>
+        <RootStack.Navigator
+          screenOptions={{
+            // Remove the header
+            headerShown: false,
+          }}>
+          <RootStack.Screen name="Home" component={TabNavigation} />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </>
   );
 };
 

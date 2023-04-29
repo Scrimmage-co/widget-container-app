@@ -1,19 +1,14 @@
 import React from 'react';
 import TabScreenSafeAreaWrapper from '../../components/TabScreenSafeAreaWrapper';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Button, Input} from '@rneui/themed';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Button, Input, Text} from '@rneui/themed';
 import {useForm, Controller, useFieldArray} from 'react-hook-form';
 import MinusIcon from '../../components/MinusIcon';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store';
 import {
-  setRewarderKeys, setServerUrl,
+  setRewarderKeys,
+  setServerUrl,
   setToken,
   setUserId,
 } from '../../store/features/appConfigSlice';
