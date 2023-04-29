@@ -6,12 +6,15 @@ import {RootState} from '../../store';
 
 const WidgetScreen = () => {
   const token = useSelector<RootState, string>(state => state.appConfig.token);
+  const serverUrl = useSelector<RootState, string>(
+    state => state.appConfig.serverUrl,
+  );
 
   return (
     <TabScreenSafeAreaWrapper edges={['left', 'right']}>
       <WebView
         source={{
-          uri: `https://coinflip.apps.scrimmage.co/?token=${token}`,
+          uri: `${serverUrl}/?token=${token}`,
         }}
         style={{
           backgroundColor: 'transparent',
