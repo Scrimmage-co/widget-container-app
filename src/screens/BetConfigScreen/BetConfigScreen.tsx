@@ -9,8 +9,8 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
 import Scrimmage, {BetOutcome, Bet, SingleBet} from 'scrimmage-rewards';
 import {SingleBetType} from 'scrimmage-rewards/dist/types/Rewardables';
-import { PrivateKey } from 'scrimmage-rewards/dist/config';
-import { RewarderKey } from '../../store/features/appConfigSlice';
+import {RewarderKey} from '../../store/features/appConfigSlice';
+import Toast from 'react-native-toast-message';
 
 const SPORTS: string[] = ['Football', 'Basketball', 'Baseball'];
 
@@ -193,7 +193,18 @@ const BetConfigScreen = () => {
       betDate: Date.now(),
       bets,
     };
-    await Scrimmage.reward.trackRewardable('coinflip', rewardable);
+    try {
+      await Scrimmage.reward.trackRewardable('coinflip', rewardable);
+      Toast.show({
+        text1: 'Bet tracked!',
+        text2: 'Your bet has been tracked successfully.',
+      });
+    } catch (e) {
+      Toast.show({
+        text1: 'Error',
+        text2: (e as any)?.message,
+      });
+    }
   };
 
   return (

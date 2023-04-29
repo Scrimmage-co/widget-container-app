@@ -13,7 +13,8 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import Scrimmage from 'scrimmage-rewards';
 import {ScrimmageRewardsProvider} from './providers/ScrimmageRewardsProvider';
-import { createTheme, ThemeProvider } from '@rneui/themed';
+import {createTheme, ThemeProvider} from '@rneui/themed';
+import ToastConfigurator from './components/ToastConfigurator';
 
 Scrimmage.initRewarder({
   apiServerEndpoint: 'https://coinflip.apps.scrimmage.co',
@@ -36,6 +37,7 @@ function App(): JSX.Element {
           <ThemeProvider theme={theme}>
             <SafeAreaProvider>
               <RootNavigation />
+              <ToastConfigurator />
             </SafeAreaProvider>
           </ThemeProvider>
         </ScrimmageRewardsProvider>

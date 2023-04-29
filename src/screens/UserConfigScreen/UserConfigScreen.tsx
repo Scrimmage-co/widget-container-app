@@ -92,7 +92,9 @@ const UserConfigScreen = () => {
 
   return (
     <TabScreenSafeAreaWrapper edges={['left', 'right']}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="never">
         <Controller
           rules={{
             required: true,
@@ -221,6 +223,7 @@ const UserConfigScreen = () => {
             </Button>
           </View>
         )}
+        <View style={{height: 400}} />
       </ScrollView>
     </TabScreenSafeAreaWrapper>
   );
@@ -228,7 +231,6 @@ const UserConfigScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     marginTop: 20,
   },
 });
