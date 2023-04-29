@@ -2,6 +2,9 @@ import React from 'react';
 import {
   createNavigationContainerRef,
   NavigationContainer,
+  Theme as ReactNavigationTheme,
+  DarkTheme,
+  DefaultTheme,
 } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -10,11 +13,6 @@ import {
 import MainScreen from './screens/MainScreen';
 import WidgetScreen from './screens/WidgetScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {
-  Theme as ReactNavigationTheme,
-  DarkTheme,
-  DefaultTheme,
-} from '@react-navigation/native';
 import {Image, StyleSheet, useColorScheme} from 'react-native';
 import {colors} from './Styles/base';
 import BetConfigScreen from './screens/BetConfigScreen';
@@ -78,7 +76,9 @@ const TabNavigation = () => {
   );
 
   const isUserConfigured =
-    Boolean(appConfig.userId) && appConfig.rewarderKeys.length > 0;
+    Boolean(appConfig.userId) &&
+    appConfig.privateKeys.length > 0 &&
+    Boolean(appConfig.serverUrl);
 
   return (
     <TabStack.Navigator>

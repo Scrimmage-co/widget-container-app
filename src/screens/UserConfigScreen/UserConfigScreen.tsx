@@ -13,17 +13,18 @@ import MinusIcon from '../../components/MinusIcon';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store';
 import {
-  setRewarderKeys,
+  setRewarderKeys, setServerUrl,
   setToken,
   setUserId,
 } from '../../store/features/appConfigSlice';
 import {useNavigation} from '@react-navigation/native';
 import {RootNavigationProp} from '../../RootNavigation';
-import Api from '../../api';
 import Clipboard from '@react-native-clipboard/clipboard';
+import Scrimmage from 'scrimmage-rewards';
 
 interface FormValues {
   username: string;
+  serverUrl: string;
   rewarderKeys: {
     id: number;
     value: string;
@@ -41,28 +42,26 @@ const UserConfigScreen = () => {
     defaultValues: {
       username: appConfig.userId || '',
       rewarderKeys:
-        appConfig.rewarderKeys.length > 0
+        appConfig.privateKeys.length > 0
           ? [
-              ...appConfig.rewarderKeys.map((key, index) => ({
+              ...appConfig.privateKeys.map((key, index) => ({
                 id: index,
-                value: key,
+                value: JSON.stringify({
+                  name: key.name || '',
+                  key: key.key,
+                }),
               })),
-              {
-                id: appConfig.rewarderKeys.length,
-                value: '',
-              },
             ]
           : [
               {
                 id: 0,
-                value:
-                  'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
-              },
-              {
-                id: 1,
-                value: '',
+                value: JSON.stringify({
+                  name: 'coinflip',
+                  key: 'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
+                }),
               },
             ],
+      serverUrl: appConfig.serverUrl || 'https://coinflip.apps.scrimmage.co',
     },
   });
   const {fields, append, remove} = useFieldArray({
@@ -74,20 +73,26 @@ const UserConfigScreen = () => {
   const submit = async (data: FormValues) => {
     dispatch(setUserId(data.username));
     const keys = data.rewarderKeys
-      .map(key => key.value)
-      .filter(key => key.length > 0);
+      .map(rewarderKey => {
+        const rewarderValue = JSON.parse(rewarderKey.value);
+        return {key: rewarderValue.key, name: rewarderValue.name};
+      })
+      .filter(key => key.key?.length > 0);
+    console.log('submit', keys, data);
     dispatch(setRewarderKeys(keys));
-    const result = await Api.auth.createUserToken(data.username, keys);
-    dispatch(setToken(result.token));
-    navigation.navigate('Main');
+    dispatch(setServerUrl(data.serverUrl));
+    const aliases = keys.map(key => key.name);
+    setTimeout(async () => {
+      const token = await Scrimmage.user.getUserToken(data.username, aliases);
+      dispatch(setToken(token));
+      navigation.navigate('Main');
+    }, 1000);
   };
 
   const refresh = async () => {
-    const result = await Api.auth.createUserToken(
-      appConfig.userId,
-      appConfig.rewarderKeys,
-    );
-    dispatch(setToken(result.token));
+    const aliases = appConfig.privateKeys.map(key => key.name);
+    const token = await Scrimmage.user.getUserToken(appConfig.userId, aliases);
+    dispatch(setToken(token));
   };
 
   return (
@@ -120,6 +125,28 @@ const UserConfigScreen = () => {
         </Button>
         {showAdvanced && (
           <View>
+            <Controller
+              name="serverUrl"
+              rules={{
+                required: true,
+                minLength: 1,
+              }}
+              render={({field, formState}) => (
+                <Input
+                  label="Server URL"
+                  placeholder="Server URL"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onChangeText={field.onChange}
+                  value={field.value}
+                  errorMessage={
+                    formState.errors.serverUrl ? 'Server URL is required' : ''
+                  }
+                  onBlur={field.onBlur}
+                />
+              )}
+              control={control}
+            />
             {fields.map((field, index) => (
               <Controller
                 key={field.id}
@@ -128,17 +155,31 @@ const UserConfigScreen = () => {
                   const canRenderMinusIcon =
                     fields.length > 1 &&
                     (renderField.value !== '' || fields.length - 1 !== index);
+                  const {key, name} = JSON.parse(renderField.value);
                   return (
                     <View>
                       <Input
+                        label={`Rewarder name #${index + 1}`}
+                        onChangeText={value => {
+                          renderField.onChange(
+                            JSON.stringify({
+                              name: value,
+                              key,
+                            }),
+                          );
+                        }}
+                        value={name}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                      <Input
                         label={`Rewarder key #${index + 1}`}
                         onChangeText={value => {
-                          renderField.onChange(value);
-                          if (index === fields.length - 1) {
-                            append({id: index + 1, value: ''});
-                          }
+                          renderField.onChange(
+                            JSON.stringify({name, key: value}),
+                          );
                         }}
-                        value={renderField.value}
+                        value={key}
                         autoCapitalize="none"
                         autoCorrect={false}
                         rightIcon={

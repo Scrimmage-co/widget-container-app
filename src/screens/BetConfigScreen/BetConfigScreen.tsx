@@ -7,7 +7,10 @@ import {Button, Switch, Text} from '@rneui/themed';
 import BadgeCloud from '../../components/BadgeCloud';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import Api from '../../api';
+import Scrimmage, {BetOutcome, Bet, SingleBet} from 'scrimmage-rewards';
+import {SingleBetType} from 'scrimmage-rewards/dist/types/Rewardables';
+import { PrivateKey } from 'scrimmage-rewards/dist/config';
+import { RewarderKey } from '../../store/features/appConfigSlice';
 
 const SPORTS: string[] = ['Football', 'Basketball', 'Baseball'];
 
@@ -99,38 +102,40 @@ const WAGER_AMOUNTS: Array<number> = [1, 2, 3, 4, 5, 10, 20, 50, 100, 200, 500];
 const OUTCOMES: Array<string> = ['win', 'lose', 'push', 'cashout', 'postponed'];
 
 interface FormValues {
+  integration: string;
   sport: string;
   league: string;
   teamBetOn: string;
   teamBetAgainst: string;
   player: string;
-  betType: string;
+  betType: SingleBetType;
   odds: number;
   parlayLegs: number;
   wagerAmount: number;
-  outcome: string;
+  outcome: BetOutcome;
   isLive: boolean;
 }
 
 const BetConfigScreen = () => {
-  const rewarderKeys = useSelector<RootState, string[]>(
-    state => state.appConfig.rewarderKeys,
-  );
+  const privateAliases = useSelector<RootState, RewarderKey[]>(
+    state => state.appConfig.privateKeys,
+  )?.map(key => key.name);
   const userId = useSelector<RootState, string>(
     state => state.appConfig.userId,
   );
   const {control, handleSubmit, watch, formState} = useForm<FormValues>({
     defaultValues: {
+      integration: privateAliases[0],
       sport: '',
       league: '',
       teamBetOn: '',
       teamBetAgainst: '',
       player: '',
-      betType: '',
+      betType: null,
       odds: 1,
       parlayLegs: 1,
       wagerAmount: 0,
-      outcome: '',
+      outcome: null,
       isLive: false,
     },
   });
@@ -163,7 +168,7 @@ const BetConfigScreen = () => {
   ]);
 
   const onSubmit = async (data: FormValues) => {
-    const bets = [];
+    const bets: SingleBet[] = [];
     for (let i = 0; i < data.parlayLegs; i++) {
       bets.push({
         sport: data.sport,
@@ -171,11 +176,11 @@ const BetConfigScreen = () => {
         teamBetOn: data.teamBetOn,
         teamBetAgainst: data.teamBetAgainst,
         player: data.player,
-        betType: data.betType,
         odds: data.odds,
+        type: data.betType,
       });
     }
-    const rewardable = {
+    const rewardable: Bet = {
       id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
       userId: userId,
       type: 'bet',
@@ -188,12 +193,32 @@ const BetConfigScreen = () => {
       betDate: Date.now(),
       bets,
     };
-    await Api.integrations.recordRewardable(rewardable, rewarderKeys[0]);
+    await Scrimmage.reward.trackRewardable('coinflip', rewardable);
   };
 
   return (
     <TabScreenSafeAreaWrapper edges={['left', 'right']}>
       <ScrollView>
+        <Controller
+          name="integration"
+          control={control}
+          rules={{required: true}}
+          render={({field: {onChange, value}, formState: {errors}}) => (
+            <View>
+              <Text h4 style={errors.integration && styles.errorText}>
+                Integration
+              </Text>
+              <InlineSelect
+                selected={value}
+                onSelect={onChange}
+                items={privateAliases.map(alias => ({
+                  label: alias,
+                  value: alias,
+                }))}
+              />
+            </View>
+          )}
+        />
         <Controller
           name="betType"
           control={control}
