@@ -179,13 +179,13 @@ const BetConfigScreen = () => {
       id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
       userId: userId,
       type: 'bet',
-      betType: data.betType,
+      betType: data.parlayLegs > 1 ? 'parlays' : 'single',
       odds: data.odds,
       description,
       wagerAmount: data.wagerAmount,
       netProfit,
       outcome: data.outcome,
-      betDate: Math.round(Date.now() / 1000),
+      betDate: Date.now(),
       bets,
     };
     await Api.integrations.recordRewardable(rewardable, rewarderKeys[0]);
@@ -236,7 +236,7 @@ const BetConfigScreen = () => {
             </View>
           )}
         />
-        {selectedSport && (
+        {Boolean(selectedSport) && (
           <Controller
             name="league"
             control={control}
@@ -260,12 +260,12 @@ const BetConfigScreen = () => {
             )}
           />
         )}
-        {selectedLeague && (
+        {Boolean(selectedLeague) && (
           <View>
             <Text h4>Team On vs Team Against</Text>
             <View style={styles.teams}>
               <View style={styles.team}>
-                {selectedLeague && (
+                {Boolean(selectedLeague) && (
                   <Controller
                     name="teamBetOn"
                     control={control}
@@ -289,7 +289,7 @@ const BetConfigScreen = () => {
               </View>
               <Text h4>vs</Text>
               <View style={styles.team}>
-                {selectedLeague && (
+                {Boolean(selectedLeague) && (
                   <Controller
                     name="teamBetAgainst"
                     control={control}
@@ -315,7 +315,7 @@ const BetConfigScreen = () => {
           </View>
         )}
         <View>
-          {(selectedTeamOn || selectedTeamAgainst) && (
+          {(Boolean(selectedTeamOn) || Boolean(selectedTeamAgainst)) && (
             <Controller
               name="player"
               control={control}
