@@ -11,6 +11,7 @@ export interface AppConfigState {
   privateKeys: RewarderKey[];
   userId?: string;
   serverUrl?: string;
+  showDebugActions?: boolean;
 }
 
 const initialState: AppConfigState = {
@@ -18,6 +19,7 @@ const initialState: AppConfigState = {
   privateKeys: [],
   userId: undefined,
   serverUrl: undefined,
+  showDebugActions: false,
 };
 
 export const appConfigSlice = createSlice({
@@ -36,11 +38,19 @@ export const appConfigSlice = createSlice({
     setServerUrl: (state, action: PayloadAction<string>) => {
       state.serverUrl = action.payload;
     },
+    showDebugActions: (state, action: PayloadAction<boolean>) => {
+      state.showDebugActions = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {setRewarderKeys, setToken, setUserId, setServerUrl} =
-  appConfigSlice.actions;
+export const {
+  setRewarderKeys,
+  setToken,
+  setUserId,
+  setServerUrl,
+  showDebugActions,
+} = appConfigSlice.actions;
 
 export default appConfigSlice.reducer;

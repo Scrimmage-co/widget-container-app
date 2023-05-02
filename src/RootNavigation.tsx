@@ -125,6 +125,7 @@ const TabNavigation = () => {
               ),
               tabBarLabel: 'Rewards',
               headerTitle: 'Rewards',
+              headerShown: false,
             }}
           />
         </>

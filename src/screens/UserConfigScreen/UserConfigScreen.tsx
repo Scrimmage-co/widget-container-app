@@ -1,7 +1,7 @@
 import React from 'react';
 import TabScreenSafeAreaWrapper from '../../components/TabScreenSafeAreaWrapper';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Button, Input, Text} from '@rneui/themed';
+import {Button, Input, Switch, Text} from '@rneui/themed';
 import {useForm, Controller, useFieldArray} from 'react-hook-form';
 import MinusIcon from '../../components/MinusIcon';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,6 +11,7 @@ import {
   setServerUrl,
   setToken,
   setUserId,
+  showDebugActions,
 } from '../../store/features/appConfigSlice';
 import {useNavigation} from '@react-navigation/native';
 import {RootNavigationProp} from '../../RootNavigation';
@@ -223,6 +224,16 @@ const UserConfigScreen = () => {
             </Button>
           </View>
         )}
+        <View style={{height: 20}} />
+        <View>
+          <Text>Debug actions shown:</Text>
+          <Switch
+            value={appConfig.showDebugActions}
+            onValueChange={value => {
+              dispatch(showDebugActions(value));
+            }}
+          />
+        </View>
         <View style={{height: 400}} />
       </ScrollView>
     </TabScreenSafeAreaWrapper>
