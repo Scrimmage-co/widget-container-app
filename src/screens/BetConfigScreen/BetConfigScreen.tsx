@@ -96,9 +96,13 @@ const DECIMAL_ODDS: Array<number> = [
   2.7, 2.87, 2.97, 3.05, 3.4, 3.6, 3.76,
 ];
 
-const PARLEY_LEGS: Array<number> = [2, 3, 4, 5];
+const PARLEY_LEGS: Array<number> = [1, 2, 3, 4, 5];
 
-const WAGER_AMOUNTS: Array<number> = [1, 2, 3, 4, 5, 10, 20, 50, 100, 200, 500];
+const WAGER_AMOUNTS_IN_DOLLARS: Array<number> = [
+  0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.5, 0.99, 1, 1.01, 2, 5, 9.99, 10,
+  20, 50, 99.99, 100, 200, 500, 999.99, 1000, 1000.01, 2000, 5000, 9999.99,
+  10000,
+];
 
 const OUTCOMES: Array<BetOutcome> = [
   'win',
@@ -141,7 +145,7 @@ const BetConfigScreen = () => {
       player: '',
       betType: null,
       odds: 1,
-      parlayLegs: 1,
+      parlayLegs: 0,
       wagerAmount: 0,
       outcome: null,
       isLive: false,
@@ -177,7 +181,7 @@ const BetConfigScreen = () => {
 
   const onSubmit = async (data: FormValues) => {
     const bets: SingleBet[] = [];
-    for (let i = 0; i < data.parlayLegs; i++) {
+    for (let i = 0; i < (data.parlayLegs || 1); i++) {
       bets.push({
         sport: data.sport,
         league: data.league,
@@ -192,11 +196,11 @@ const BetConfigScreen = () => {
       id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
       userId: userId,
       type: 'bet',
-      betType: data.parlayLegs > 1 ? 'parlays' : 'single',
+      betType: data.parlayLegs > 0 ? 'parlays' : 'single',
       odds: data.odds,
       description,
-      wagerAmount: data.wagerAmount,
-      netProfit,
+      wagerAmount: data.wagerAmount * 100,
+      netProfit: netProfit * 100,
       outcome: data.outcome,
       betDate: Date.now(),
       bets,
@@ -413,7 +417,7 @@ const BetConfigScreen = () => {
               <BadgeCloud
                 canUnselect
                 selected={value?.toString()}
-                onSelect={parleyLegs => onChange(parseInt(parleyLegs, 10) || 1)}
+                onSelect={parleyLegs => onChange(parseInt(parleyLegs, 10) || 0)}
                 items={PARLEY_LEGS.map(leg => leg.toString())}
               />
             </View>
@@ -425,19 +429,21 @@ const BetConfigScreen = () => {
           rules={{
             required: true,
             min: {
-              value: 1,
-              message: 'Wager amount must be at least $1',
+              value: 0.01,
+              message: 'Wager amount must be at least $0.01',
             },
           }}
           render={({field: {onChange, value}, formState: {errors}}) => (
             <View>
               <Text h4 style={errors.wagerAmount && styles.errorText}>
-                Wager Amount
+                Wager Amount (in dollars)
               </Text>
               <BadgeCloud
                 selected={value?.toString()}
                 onSelect={wager => onChange(parseFloat(wager))}
-                items={WAGER_AMOUNTS.map(amount => amount.toString())}
+                items={WAGER_AMOUNTS_IN_DOLLARS.map(amount =>
+                  amount.toString(),
+                )}
               />
             </View>
           )}
