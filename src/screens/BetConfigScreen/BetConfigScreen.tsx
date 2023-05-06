@@ -204,6 +204,7 @@ const BetConfigScreen = () => {
       outcome: data.outcome,
       betDate: Date.now(),
       bets,
+      isLive: data.isLive,
     };
     try {
       await Scrimmage.reward.trackRewardable('coinflip', rewardable);
