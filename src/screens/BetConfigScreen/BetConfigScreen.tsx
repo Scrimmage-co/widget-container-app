@@ -7,8 +7,8 @@ import {Button, Switch, Text} from '@rneui/themed';
 import BadgeCloud from '../../components/BadgeCloud';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import Scrimmage, {BetOutcome, Bet, SingleBet} from 'scrimmage-rewards';
-import {SingleBetType} from 'scrimmage-rewards/dist/types/Rewardables';
+import Scrimmage, {BetOutcome, Bet, SingleBet} from '@scrimmage/rewards';
+import {SingleBetType} from '@scrimmage/rewards';
 import {RewarderKey} from '../../store/features/appConfigSlice';
 import Toast from 'react-native-toast-message';
 

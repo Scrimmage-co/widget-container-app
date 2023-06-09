@@ -16,7 +16,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {RootNavigationProp} from '../../RootNavigation';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Scrimmage from 'scrimmage-rewards';
+import Scrimmage from '@scrimmage/rewards';
 
 interface FormValues {
   username: string;
