@@ -20,6 +20,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from './store';
 import UserConfigScreen from './screens/UserConfigScreen';
 import {useThemeMode} from '@rneui/themed';
+import CustomRewardableScreen from './screens/CustomRewardableScreen';
 
 export type RootStackParamList = {
   UserConfig: undefined;
@@ -103,6 +104,17 @@ const TabNavigation = () => {
                 require('./assets/tabs/coinflip-tab-icon.png'),
               ),
               headerShown: false,
+            }}
+          />
+          <TabStack.Screen
+            name="CustomRewardable"
+            component={CustomRewardableScreen}
+            options={{
+              tabBarIcon: createTabIcon(
+                require('./assets/tabs/custom-tab-icon.png'),
+              ),
+              tabBarLabel: 'Custom',
+              headerTitle: 'Custom',
             }}
           />
           <TabStack.Screen

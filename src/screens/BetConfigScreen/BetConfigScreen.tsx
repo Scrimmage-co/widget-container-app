@@ -7,8 +7,13 @@ import {Button, Switch, Text} from '@rneui/themed';
 import BadgeCloud from '../../components/BadgeCloud';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import Scrimmage, {BetOutcome, Bet, SingleBet} from 'scrimmage-rewards';
-import {SingleBetType} from 'scrimmage-rewards/dist/types/Rewardables';
+import Scrimmage, {
+  BetOutcome,
+  BetMade,
+  BetExecuted,
+  SingleBet,
+} from '@scrimmage/rewards';
+import {SingleBetType} from '@scrimmage/rewards/dist/types/Rewardables';
 import {RewarderKey} from '../../store/features/appConfigSlice';
 import Toast from 'react-native-toast-message';
 
@@ -82,13 +87,12 @@ const PLAYERS: Record<string, string[]> = {
   'Yomiuri Giants': ['Hayato Sakamoto', 'Kazuma Okamoto', 'Zelous Wheeler'],
 };
 
-const BET_TYPES: Array<string> = [
+const BET_TYPES: Array<SingleBetType> = [
   'over',
   'under',
   'spread',
   'moneyline',
   'prop',
-  'live',
 ];
 
 const DECIMAL_ODDS: Array<number> = [
@@ -104,13 +108,15 @@ const WAGER_AMOUNTS_IN_DOLLARS: Array<number> = [
   10000,
 ];
 
-const OUTCOMES: Array<BetOutcome> = [
+type BetOutcomeWithPending = BetOutcome | 'pending';
+
+const OUTCOMES: Array<BetOutcomeWithPending> = [
   'win',
   'lose',
   'push',
   'cashout',
   'postponed',
-  'live',
+  'pending',
 ];
 
 interface FormValues {
@@ -124,7 +130,7 @@ interface FormValues {
   odds: number;
   parlayLegs: number;
   wagerAmount: number;
-  outcome: BetOutcome;
+  outcome: BetOutcomeWithPending;
   isLive: boolean;
 }
 
@@ -192,22 +198,38 @@ const BetConfigScreen = () => {
         type: data.betType,
       });
     }
-    const rewardable: Bet = {
-      id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
-      userId: userId,
-      type: 'bet',
-      betType: data.parlayLegs > 0 ? 'parlays' : 'single',
-      odds: data.odds,
-      description,
-      wagerAmount: data.wagerAmount * 100,
-      netProfit: netProfit * 100,
-      outcome: data.outcome,
-      betDate: Date.now(),
-      bets,
-      isLive: data.isLive,
-    };
     try {
-      await Scrimmage.reward.trackRewardable('coinflip', rewardable);
+      if (data.outcome === 'pending') {
+        const betMade: BetMade = {
+          id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
+          userId: userId,
+          type: 'betMade',
+          betType: data.parlayLegs > 0 ? 'parlays' : 'single',
+          odds: data.odds,
+          description,
+          wagerAmount: data.wagerAmount * 100,
+          betDate: Date.now(),
+          bets,
+          isLive: data.isLive,
+        };
+        await Scrimmage.reward.trackRewardable(data.integration, betMade);
+      } else {
+        const betExecuted: BetExecuted = {
+          id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
+          userId: userId,
+          type: 'betExecuted',
+          betType: data.parlayLegs > 0 ? 'parlays' : 'single',
+          odds: data.odds,
+          description,
+          outcome: data.outcome,
+          wagerAmount: data.wagerAmount * 100,
+          netProfit: netProfit * 100,
+          betDate: Date.now(),
+          bets,
+          isLive: data.isLive,
+        };
+        await Scrimmage.reward.trackRewardable(data.integration, betExecuted);
+      }
       Toast.show({
         text1: 'Bet tracked!',
         text2: 'Your bet has been tracked successfully.',

@@ -53,6 +53,7 @@ const WidgetScreen = () => {
           backgroundColor: 'transparent',
           flex: 1,
         }}
+        cacheMode="LOAD_NO_CACHE"
       />
     </TabScreenSafeAreaWrapper>
   );

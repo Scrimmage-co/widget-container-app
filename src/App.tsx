@@ -11,7 +11,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {persistor, store} from './store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import Scrimmage from 'scrimmage-rewards';
+import Scrimmage from '@scrimmage/rewards';
 import {ScrimmageRewardsProvider} from './providers/ScrimmageRewardsProvider';
 import {createTheme, ThemeProvider} from '@rneui/themed';
 import ToastConfigurator from './components/ToastConfigurator';
