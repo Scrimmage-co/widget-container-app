@@ -25,10 +25,7 @@ export const ScrimmageRewardsProvider: React.FC<
     if (appConfig.serverUrl && appConfig.privateKeys.length > 0) {
       Scrimmage.initRewarder({
         apiServerEndpoint: appConfig.serverUrl,
-        privateKeys: appConfig.privateKeys.map(privateKey => ({
-          alias: privateKey.name,
-          value: privateKey.key,
-        })),
+        privateKey: appConfig.privateKeys[0].key,
       });
     }
   }, [appConfig]);

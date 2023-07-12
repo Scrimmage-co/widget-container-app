@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewProps,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, ViewProps} from 'react-native';
 import {Text} from '@rneui/themed';
 
 export interface InlineSelectItem {
