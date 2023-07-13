@@ -7,13 +7,12 @@ import {Button, Switch, Text} from '@rneui/themed';
 import BadgeCloud from '../../components/BadgeCloud';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import Scrimmage, {
-  BetOutcome,
-  BetMade,
-  BetExecuted,
-  SingleBet,
-} from '@scrimmage/rewards';
-import {SingleBetType} from '@scrimmage/rewards/dist/types/Rewardables';
+import Scrimmage from '@scrimmage/rewards';
+import {BetExecuted} from '@scrimmage/schemas';
+import {BetOutcome} from '@scrimmage/schemas';
+import {BetMade} from '@scrimmage/schemas';
+import {SingleBet} from '@scrimmage/schemas';
+import {SingleBetType} from '@scrimmage/schemas';
 import {RewarderKey} from '../../store/features/appConfigSlice';
 import Toast from 'react-native-toast-message';
 
@@ -212,7 +211,7 @@ const BetConfigScreen = () => {
           bets,
           isLive: data.isLive,
         };
-        await Scrimmage.reward.trackRewardable(data.integration, betMade);
+        await Scrimmage.reward.trackRewardable(betMade);
       } else {
         const betExecuted: BetExecuted = {
           id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
@@ -228,7 +227,7 @@ const BetConfigScreen = () => {
           bets,
           isLive: data.isLive,
         };
-        await Scrimmage.reward.trackRewardable(data.integration, betExecuted);
+        await Scrimmage.reward.trackRewardable(betExecuted);
       }
       Toast.show({
         text1: 'Bet tracked!',

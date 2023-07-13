@@ -18,13 +18,8 @@ import ToastConfigurator from './components/ToastConfigurator';
 
 Scrimmage.initRewarder({
   apiServerEndpoint: 'https://coinflip.apps.scrimmage.co',
-  privateKeys: [
-    {
-      alias: 'coinflip',
-      value:
-        'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
-    },
-  ],
+  privateKey:
+    'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
 });
 
 const theme = createTheme({});
