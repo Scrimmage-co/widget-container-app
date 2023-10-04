@@ -1,24 +1,23 @@
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
-export interface RewarderKey {
-  name: string;
-  key: string;
-}
-
 export interface AppConfigState {
   token?: string;
-  privateKeys: RewarderKey[];
+  privateKey?: string;
   userId?: string;
   serverUrl?: string;
+  namespace?: string;
+  userTags?: string[];
   showDebugActions?: boolean;
 }
 
 const initialState: AppConfigState = {
   token: undefined,
-  privateKeys: [],
+  privateKey: undefined,
   userId: undefined,
   serverUrl: undefined,
+  namespace: undefined,
+  userTags: undefined,
   showDebugActions: false,
 };
 
@@ -26,8 +25,8 @@ export const appConfigSlice = createSlice({
   name: 'appConfig',
   initialState,
   reducers: {
-    setRewarderKeys: (state, action: PayloadAction<RewarderKey[]>) => {
-      state.privateKeys = action.payload;
+    setRewarderKey: (state, action: PayloadAction<string>) => {
+      state.privateKey = action.payload;
     },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
@@ -41,16 +40,24 @@ export const appConfigSlice = createSlice({
     showDebugActions: (state, action: PayloadAction<boolean>) => {
       state.showDebugActions = action.payload;
     },
+    setNamespace: (state, action: PayloadAction<string>) => {
+      state.namespace = action.payload;
+    },
+    setUserTags: (state, action: PayloadAction<string[]>) => {
+      state.userTags = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
-  setRewarderKeys,
+  setRewarderKey,
   setToken,
   setUserId,
   setServerUrl,
   showDebugActions,
+  setNamespace,
+  setUserTags,
 } = appConfigSlice.actions;
 
 export default appConfigSlice.reducer;

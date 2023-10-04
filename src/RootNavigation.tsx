@@ -60,6 +60,7 @@ const RootNavigation = () => {
 
   useEffect(() => {
     setMode(isDarkMode ? 'dark' : 'light');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDarkMode]);
 
   return (
@@ -87,8 +88,9 @@ const TabNavigation = () => {
 
   const isUserConfigured =
     Boolean(appConfig.userId) &&
-    appConfig.privateKeys.length > 0 &&
-    Boolean(appConfig.serverUrl);
+    Boolean(appConfig.privateKey) &&
+    Boolean(appConfig.serverUrl) &&
+    Boolean(appConfig.namespace);
 
   return (
     <TabStack.Navigator>

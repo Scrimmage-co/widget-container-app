@@ -20,6 +20,7 @@ Scrimmage.initRewarder({
   apiServerEndpoint: 'https://coinflip.apps.scrimmage.co',
   privateKey:
     'AYeqBMEEeewDZM1rng_nIwXyKRJT0xjmuSNzFAxK2loAy9FLZoqSMzQJEjDdLbw-Px7fKudU',
+  namespace: 'production',
 });
 
 const theme = createTheme({});

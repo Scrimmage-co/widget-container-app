@@ -8,12 +8,13 @@ import BadgeCloud from '../../components/BadgeCloud';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
 import Scrimmage from '@scrimmage/rewards';
-import {BetExecuted} from '@scrimmage/schemas';
-import {BetOutcome} from '@scrimmage/schemas';
-import {BetMade} from '@scrimmage/schemas';
-import {SingleBet} from '@scrimmage/schemas';
-import {SingleBetType} from '@scrimmage/schemas';
-import {RewarderKey} from '../../store/features/appConfigSlice';
+import {
+  BetExecuted,
+  BetOutcome,
+  BetMade,
+  SingleBet,
+  SingleBetType,
+} from '@scrimmage/schemas';
 import Toast from 'react-native-toast-message';
 
 const SPORTS: string[] = ['Football', 'Basketball', 'Baseball'];
@@ -134,15 +135,11 @@ interface FormValues {
 }
 
 const BetConfigScreen = () => {
-  const privateAliases = useSelector<RootState, RewarderKey[]>(
-    state => state.appConfig.privateKeys,
-  )?.map(key => key.name);
   const userId = useSelector<RootState, string>(
     state => state.appConfig.userId,
   );
   const {control, handleSubmit, watch, formState} = useForm<FormValues>({
     defaultValues: {
-      integration: privateAliases[0],
       sport: '',
       league: '',
       teamBetOn: '',
@@ -198,36 +195,43 @@ const BetConfigScreen = () => {
       });
     }
     try {
+      const eventId = `coinflip_${(
+        Math.random() * 100000000000000
+      ).toString()}`;
       if (data.outcome === 'pending') {
-        const betMade: BetMade = {
-          id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
-          userId: userId,
-          type: 'betMade',
-          betType: data.parlayLegs > 0 ? 'parlays' : 'single',
-          odds: data.odds,
-          description,
-          wagerAmount: data.wagerAmount * 100,
-          betDate: Date.now(),
-          bets,
-          isLive: data.isLive,
-        };
-        await Scrimmage.reward.trackRewardable(betMade);
+        await Scrimmage.reward.trackRewardableOnce<BetMade>(
+          userId,
+          'betMade',
+          eventId,
+          {
+            type: 'betMade',
+            betType: data.parlayLegs > 0 ? 'parlays' : 'single',
+            odds: data.odds,
+            description,
+            wagerAmount: data.wagerAmount * 100,
+            betDate: Date.now(),
+            bets,
+            isLive: data.isLive,
+          },
+        );
       } else {
-        const betExecuted: BetExecuted = {
-          id: `coinflip_${(Math.random() * 1000000000000000000).toString()}`,
-          userId: userId,
-          type: 'betExecuted',
-          betType: data.parlayLegs > 0 ? 'parlays' : 'single',
-          odds: data.odds,
-          description,
-          outcome: data.outcome,
-          wagerAmount: data.wagerAmount * 100,
-          netProfit: netProfit * 100,
-          betDate: Date.now(),
-          bets,
-          isLive: data.isLive,
-        };
-        await Scrimmage.reward.trackRewardable(betExecuted);
+        await Scrimmage.reward.trackRewardableOnce<BetExecuted>(
+          userId,
+          'betExecuted',
+          eventId,
+          {
+            type: 'betExecuted',
+            betType: data.parlayLegs > 0 ? 'parlays' : 'single',
+            odds: data.odds,
+            description,
+            outcome: data.outcome,
+            wagerAmount: data.wagerAmount * 100,
+            netProfit: netProfit * 100,
+            betDate: Date.now(),
+            bets,
+            isLive: data.isLive,
+          },
+        );
       }
       Toast.show({
         text1: 'Bet tracked!',
@@ -244,26 +248,6 @@ const BetConfigScreen = () => {
   return (
     <TabScreenSafeAreaWrapper edges={['left', 'right']}>
       <ScrollView>
-        <Controller
-          name="integration"
-          control={control}
-          rules={{required: true}}
-          render={({field: {onChange, value}, formState: {errors}}) => (
-            <View>
-              <Text h4 style={errors.integration && styles.errorText}>
-                Integration
-              </Text>
-              <InlineSelect
-                selected={value}
-                onSelect={onChange}
-                items={privateAliases.map(alias => ({
-                  label: alias,
-                  value: alias,
-                }))}
-              />
-            </View>
-          )}
-        />
         <Controller
           name="betType"
           control={control}

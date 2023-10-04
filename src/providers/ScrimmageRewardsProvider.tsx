@@ -17,15 +17,17 @@ export const ScrimmageRewardsProvider: React.FC<
   );
 
   useEffect(() => {
-    console.log(
+    console.warn(
       'ScrimmageRewardsProvider',
       appConfig.serverUrl,
-      appConfig.privateKeys,
+      appConfig.privateKey,
+      appConfig.namespace,
     );
-    if (appConfig.serverUrl && appConfig.privateKeys.length > 0) {
+    if (appConfig.serverUrl && appConfig.privateKey && appConfig.namespace) {
       Scrimmage.initRewarder({
         apiServerEndpoint: appConfig.serverUrl,
-        privateKey: appConfig.privateKeys[0].key,
+        privateKey: appConfig.privateKey,
+        namespace: appConfig.namespace,
       });
     }
   }, [appConfig]);
